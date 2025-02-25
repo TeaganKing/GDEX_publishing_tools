@@ -8,7 +8,7 @@
 # conda activate /glade/work/rdadata/conda-envs/pg-casper
 import os
 
-# SET PARAMETERS
+# SET PARAMETERS - UPDATE THESE!
 dset = "d6510##"
 name = "CESM1-CAM5-DPLE" # This name will be used in combination with the child dataset keys on the RDA webpage
 
@@ -29,28 +29,34 @@ if not os.path.exists(scratch_dir):
 # The key is concatenated with the name to provide the displayed name on RDA.
 # The corresponding values are a list of [component, frequency, ensemble member].
 # The corresponding values should also be the same as the names used in the directory structure
-child_datasets = {'FOSI Ice Daily': ['ice','daily','FOSI'],
-                  'FOSI Ice Monthly': ['ice','monthly','FOSI'],
-                  'FOSI Ocean Daily': ['ocn','daily','FOSI'],
-                  'FOSI Ocean Monthly': ['ocn','monthly','FOSI'],
-                  'FOSI Ocean Yearly': ['ocn','yearly','FOSI'],
-                  'Atmosphere 6-Hourly': ['atm','6-hourly',''],
-                  'Atmosphere Daily': ['atm','daily',''],
-                  'Atmosphere Monthly': ['atm','monthly',''],
-                  'Ice Daily': ['ice','daily',''],
-                  'Ice Monthly': ['ice','monthly',''],
-                  'Land Daily': ['lnd','daily',''],
-                  'Land Monthly': ['lnd','monthly',''],
-                  'Ocean 5-Daily': ['ocn','5-daily',''],
-                  'Ocean Monthly': ['ocn','monthly',''],
-                  'Ocean Yearly': ['ocn','yearly',''],
-                  'River Runoff Daily': ['rof','daily',''],
-                  'River Runoff Monthly': ['rof','monthly',''],
+
+# UPDATE THESE VALUES WITH THE FORMAT THAT IS USED IN FILEPATHS TO DATA
+ensemble_name='' # eg, 'FOSI'
+day_freq_name = 'daily' # could change to 'day_1'
+month_freq_name = 'monthly'  # could change to 'month_1'
+hour6_freq_name = 'hourly6'  # could change to '6-hourly'
+yearly_freq_name = 'yearly' # could change to 'annual'
+
+child_datasets = {ensemble_name+' Ice '+day_freq_name: ['ice',day_freq_name,ensemble_name],  # REMOVE ANY LINES THAT ARE NOT INCLUDED IN CHILD DATASET
+                  ensemble_name+' Ice '+month_freq_name: ['ice',month_freq_name,ensemble_name],
+                  'Atmosphere '+hour6_freq_name: ['atm',hour6_freq_name,''],
+                  'Atmosphere '+day_freq_name: ['atm',day_freq_name,''],
+                  'Atmosphere '+month_freq_name: ['atm',month_freq_name,''],
+                  'Ice '+day_freq_name: ['ice',day_freq_name,''],
+                  'Ice '+month_freq_name: ['ice',month_freq_name,''],
+                  'Land '+day_freq_name: ['lnd',day_freq_name,''],
+                  'Land '+month_freq_name: ['lnd',month_freq_name,''],
+                  'Ocean '+month_freq_name: ['ocn',month_freq_name,''],
+                  'Ocean '+yearly_freq_name: ['ocn',yearly_freq_name,''],
+                  'River Runoff '+day_freq_name: ['rof',day_freq_name,''],
+                  'River Runoff '+month_freq_name: ['rof',month_freq_name,''],
                  }
 #--------------------------------------------------------------------------------------------------
 # determine unique dataset numbers corresponding with each child dataset
 for child in child_datasets:
-    if child_datasets[child][2]=='FOSI':  # You may need to edit this bit to get unique numbers for every ensemble member # TODO could probably automate that
+    if ensemble_name == '':
+        ens_number = ''
+    elif child_datasets[child][2]=='FOSI':  # You may need to edit this bit to get unique numbers for every ensemble member # TODO could probably automate that
         ens_number = '1'
     elif child_datasets[child][2]=='':
         ens_number = '2'
