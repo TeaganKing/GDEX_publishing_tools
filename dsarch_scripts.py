@@ -8,38 +8,35 @@
 # conda activate /glade/work/rdadata/conda-envs/pg-casper
 import os
 
-# SET PARAMETERS - UPDATE THESE!
-dset = "d6510##"
-name = "CESM1-CAM5-DPLE" # This name will be used in combination with the child dataset keys on the RDA webpage
-
-readme = "" # set to empty string if readme does not exist to be added to Documentation Tab
-#readme = "README.md" # if README does exist, add name of file here
-
 # TODO: eventually we'd like to include these features
 # print_out_only = True # True = only print commands, False = execute command (batch job?)
 # overwrite = True # This will ideally eventually be set to avoid overwriting existing files;
 # warning: for now, please only use this tool if files with the same name do not yet exist
 # commands to run certain script portions and not others
 
-scratch_dir = "/glade/campaign/collections/rda/scratch/tking/"+dset+"/" # PLEASE CHANGE TO YOUR USERNAME!
-if not os.path.exists(scratch_dir):
-    os.mkdir(scratch_dir)
+###############################################################################################################################
+# SET PARAMETERS - UPDATE THIS SECTION!
+dset = "d6510##"  # UPDATE # to be dataset number
+name = "CESM1-CAM5-DPLE" # This name will be used in combination with the child dataset keys on the RDA webpage
 
-# This should be a dictionary of all child datasets.
-# The key is concatenated with the name to provide the displayed name on RDA.
-# The corresponding values are a list of [component, frequency, ensemble member].
-# The corresponding values should also be the same as the names used in the directory structure
+readme = "" # set to empty string if readme does not exist to be added to Documentation Tab
+#readme = "README.md" # if README does exist, add name of file here
 
-# UPDATE THESE VALUES WITH THE FORMAT THAT IS USED IN FILEPATHS TO DATA
+username = 'tking' # PLEASE CHANGE TO YOUR USERNAME!
+
+# UPDATE THESE VALUES WITH THE FORMAT THAT IS USED IN DIRECTORY STRUCTURE
 ensemble_name='' # eg, 'FOSI'
 day_freq_name = 'daily' # could change to 'day_1'
 month_freq_name = 'monthly'  # could change to 'month_1'
 hour6_freq_name = 'hourly6'  # could change to '6-hourly'
 yearly_freq_name = 'yearly' # could change to 'annual'
 
-child_datasets = {ensemble_name+' Ice '+day_freq_name: ['ice',day_freq_name,ensemble_name],  # REMOVE ANY LINES THAT ARE NOT INCLUDED IN CHILD DATASET
+# THIS SHOULD BE A DICTIONARY OF ALL CHILD DATASETS. IT NEEDS UPDATING FOR EACH DATASET
+# The key (eg Atmoshperic daily) is concatenated with the name (eg CESM1-CAM5-DPLE) to provide the displayed name on RDA (eg CESM1-CAM5-DPLE Atmospheric daily).
+# The corresponding values are a list of [component, frequency, ensemble member].
+child_datasets = {ensemble_name+' Ice '+day_freq_name: ['ice',day_freq_name,ensemble_name],
                   ensemble_name+' Ice '+month_freq_name: ['ice',month_freq_name,ensemble_name],
-                  'Atmosphere '+hour6_freq_name: ['atm',hour6_freq_name,''],
+                  'Atmosphere '+hour6_freq_name: ['atm',hour6_freq_name,''],  # ensemble member can be empty string if ensemble members are not relevant
                   'Atmosphere '+day_freq_name: ['atm',day_freq_name,''],
                   'Atmosphere '+month_freq_name: ['atm',month_freq_name,''],
                   'Ice '+day_freq_name: ['ice',day_freq_name,''],
@@ -51,7 +48,14 @@ child_datasets = {ensemble_name+' Ice '+day_freq_name: ['ice',day_freq_name,ense
                   'River Runoff '+day_freq_name: ['rof',day_freq_name,''],
                   'River Runoff '+month_freq_name: ['rof',month_freq_name,''],
                  }
+
+# USERS PROBABLY DON'T NEED TO EDIT ANYTHING BELOW THIS LINE
+#############################################################################################################################
 #--------------------------------------------------------------------------------------------------
+scratch_dir = "/glade/campaign/collections/rda/scratch/"+username+"/"+dset+"/"
+if not os.path.exists(scratch_dir):
+    os.mkdir(scratch_dir)
+
 # determine unique dataset numbers corresponding with each child dataset
 for child in child_datasets:
     if ensemble_name == '':
@@ -75,16 +79,14 @@ for child in child_datasets:
         comp_number = '5'
     else:
         print("Warning: comp_number not found")
-    if child_datasets[child][1]=='daily':
+    if child_datasets[child][1]==day_freq_name:
         freq_number = '1'
-    elif child_datasets[child][1]=='monthly':
+    elif child_datasets[child][1]==month_freq_name:
         freq_number = '2'
-    elif child_datasets[child][1]=='yearly':
+    elif child_datasets[child][1]==yearly_freq_name:
         freq_number = '3'
-    elif child_datasets[child][1]=='6-hourly':
+    elif child_datasets[child][1]==hour6_freq_name:
         freq_number = '4'
-    elif child_datasets[child][1]=='5-daily':
-        freq_number = '5'
     else:
          print(f"Warning: freq_number {child_datasets[child][1]} not found")
 
