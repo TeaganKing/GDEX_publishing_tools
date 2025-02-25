@@ -9,7 +9,7 @@
 import os
 
 # SET PARAMETERS
-dset = "d651028"
+dset = "d6510##"
 name = "CESM1-CAM5-DPLE" # This name will be used in combination with the child dataset keys on the RDA webpage
 
 readme = "" # set to empty string if readme does not exist to be added to Documentation Tab
@@ -42,7 +42,7 @@ child_datasets = {'FOSI Ice Daily': ['ice','daily','FOSI'],
                   'Land Daily': ['lnd','daily',''],
                   'Land Monthly': ['lnd','monthly',''],
                   'Ocean 5-Daily': ['ocn','5-daily',''],
-                  'Ocean Monthly': ['ocn','daily',''],
+                  'Ocean Monthly': ['ocn','monthly',''],
                   'Ocean Yearly': ['ocn','yearly',''],
                   'River Runoff Daily': ['rof','daily',''],
                   'River Runoff Monthly': ['rof','monthly',''],
