@@ -56,12 +56,12 @@ ensemble_members_list=['....001', '.....002', '...003']
 # DUPLICATE DRAFT DICTIONARY FOR EACH ENSEMBLE MEMBER IN THE ABOVE LIST IF ovewrite_child_dataset_with_ensembles is True
 child_datasets_overwrite = {}
 if ovewrite_child_dataset_with_ensembles:
-    for base_key, base_val in child_datasets_pre_ensemble.items():
+    for base_key, base_val in child_datasets.items():
         for ensemble_member in ensemble_members_list:
             new_key = f"{base_key} {ensemble_member}"
             new_val = base_val[:-1] + [ensemble_member]  # Replace last item ('' placeholder)
             child_datasets_overwrite[new_key] = new_val
-    child_datasets = child_datsets_overwrite
+    child_datasets = child_datasets_overwrite
 
 # USERS PROBABLY DON'T NEED TO EDIT ANYTHING BELOW THIS LINE
 #############################################################################################################################
