@@ -63,6 +63,8 @@ if ovewrite_child_dataset_with_ensembles:
             child_datasets_overwrite[new_key] = new_val
     child_datasets = child_datasets_overwrite
 
+run_in_batch = True  # if running on casper, appends -d -b to dsarch commands in order to run as a batch job. Can alternatively run on rda-work or write a batch script.
+
 # USERS PROBABLY DON'T NEED TO EDIT ANYTHING BELOW THIS LINE
 #############################################################################################################################
 #--------------------------------------------------------------------------------------------------
@@ -186,4 +188,7 @@ with open(scratch_dir+"dsarch_commands", "w") as file:
         file.write(f"dsarch {dset} ah -ht D -df text -LF {readme}\n")
     for child in child_datasets:
         number=child_datasets[child][3]
-        file.write(f"dsarch {dset} sw  -GI {number} -LC G -IF {dset}.{number} &\n")
+        if run_in_batch:
+            file.write(f"dsarch {dset} sw  -GI {number} -LC G -IF {dset}.{number} -d -b &\n")
+        else:
+            file.write(f"dsarch {dset} sw  -GI {number} -LC G -IF {dset}.{number} &\n")
