@@ -17,7 +17,7 @@ import os
 ###############################################################################################################################
 # SET PARAMETERS - UPDATE THIS SECTION!
 dset = "d6510##"  # UPDATE # to be dataset number
-name = "CESM1-CAM5-DPLE" # This name will be used in combination with the child dataset keys on the RDA webpage
+name = "SOMETHING-LIKE-CESM1-CAM5-DPLE" # This name will be used in combination with the child dataset keys on the RDA webpage
 
 readme = "" # set to empty string if readme does not exist to be added to Documentation Tab
 #readme = "README.md" # if README does exist, add name of file here
@@ -25,6 +25,7 @@ readme = "" # set to empty string if readme does not exist to be added to Docume
 username = 'tking' # PLEASE CHANGE TO YOUR USERNAME!
 
 # UPDATE THESE VALUES WITH THE FORMAT THAT IS USED IN DIRECTORY STRUCTURE
+# Note that it's okay to have some that are not used that are defined here; if they're not defined, it'll cause issues later...
 ensemble_name='' # eg, 'FOSI'
 day_freq_name = 'daily' # could change to 'day_1'
 month_freq_name = 'monthly'  # could change to 'month_1'
@@ -49,6 +50,19 @@ child_datasets = {ensemble_name+' Ice '+day_freq_name: ['ice',day_freq_name,ense
                   'River Runoff '+month_freq_name: ['rof',month_freq_name,''],
                  }
 
+ovewrite_child_dataset_with_ensembles = False  # Change to True if you want to use this feature!
+ensemble_members_list=['....001', '.....002', '...003']
+
+# DUPLICATE DRAFT DICTIONARY FOR EACH ENSEMBLE MEMBER IN THE ABOVE LIST IF ovewrite_child_dataset_with_ensembles is True
+child_datasets_overwrite = {}
+if ovewrite_child_dataset_with_ensembles:
+    for base_key, base_val in child_datasets_pre_ensemble.items():
+        for ensemble_member in ensemble_members_list:
+            new_key = f"{base_key} {ensemble_member}"
+            new_val = base_val[:-1] + [ensemble_member]  # Replace last item ('' placeholder)
+            child_datasets_overwrite[new_key] = new_val
+    child_datasets = child_datsets_overwrite
+
 # USERS PROBABLY DON'T NEED TO EDIT ANYTHING BELOW THIS LINE
 #############################################################################################################################
 #--------------------------------------------------------------------------------------------------
@@ -60,13 +74,29 @@ if not os.path.exists(scratch_dir):
 for child in child_datasets:
     if ensemble_name == '':
         ens_number = ''
-    elif child_datasets[child][2]=='FOSI':  # You may need to edit this bit to get unique numbers for every ensemble member # TODO could probably automate that
+    if child_datasets[child][2][-3:]=='001':
         ens_number = '1'
-    elif child_datasets[child][2]=='':
+    elif child_datasets[child][2][-3:]=='002':
         ens_number = '2'
+    elif child_datasets[child][2][-3:]=='003':
+        ens_number = '3'
+    elif child_datasets[child][2][-3:]=='004':
+        ens_number = '4'
+    elif child_datasets[child][2][-3:]=='005':
+        ens_number = '5'
+    elif child_datasets[child][2][-3:]=='006':
+        ens_number = '6'
+    elif child_datasets[child][2][-3:]=='007':
+        ens_number = '7'
+    elif child_datasets[child][2][-3:]=='008':
+        ens_number = '8'
+    elif child_datasets[child][2][-3:]=='009':
+        ens_number = '9'
+    elif child_datasets[child][2][-3:]=='010':
+        ens_number = '10'
     else:
-        print(f"Warning: ens_number {child_datasets[child][2]} not found")
-
+        print(f"Warning: ens_number {child_datasets[child][2][-3:]} not found")
+    
     if child_datasets[child][0]=='atm':
         comp_number = '1'
     elif child_datasets[child][0]=='ocn':
@@ -77,6 +107,8 @@ for child in child_datasets:
         comp_number = '4'
     elif child_datasets[child][0]=='rof':
         comp_number = '5'
+    elif child_datasets[child][0]=='glc':
+        comp_number = '6'
     else:
         print("Warning: comp_number not found")
     if child_datasets[child][1]==day_freq_name:
@@ -87,6 +119,7 @@ for child in child_datasets:
         freq_number = '3'
     elif child_datasets[child][1]==hour6_freq_name:
         freq_number = '4'
+    # IF YOU ADDED MORE FREQUENCY OPTIONS, INCLUDE THEM HERE
     else:
          print(f"Warning: freq_number {child_datasets[child][1]} not found")
 
