@@ -29,25 +29,26 @@ username = 'tking' # PLEASE CHANGE TO YOUR USERNAME!
 ensemble_name='' # eg, 'FOSI'
 day_freq_name = 'daily' # could change to 'day_1'
 month_freq_name = 'monthly'  # could change to 'month_1'
-hour6_freq_name = 'hourly6'  # could change to '6-hourly'
 yearly_freq_name = 'yearly' # could change to 'annual'
+hour3_freq_name = 'hourly3'  # could change to '3-hourly'
+hour6_freq_name = 'hourly6'  # could change to '6-hourly'
 
 # THIS SHOULD BE A DICTIONARY OF ALL CHILD DATASETS. IT NEEDS UPDATING FOR EACH DATASET
 # The key (eg Atmoshperic daily) is concatenated with the name (eg CESM1-CAM5-DPLE) to provide the displayed name on RDA (eg CESM1-CAM5-DPLE Atmospheric daily).
 # The corresponding values are a list of [component, frequency, ensemble member].
-child_datasets = {ensemble_name+' Ice '+day_freq_name: ['ice',day_freq_name,ensemble_name],
-                  ensemble_name+' Ice '+month_freq_name: ['ice',month_freq_name,ensemble_name],
-                  'Atmosphere '+hour6_freq_name: ['atm',hour6_freq_name,''],  # ensemble member can be empty string if ensemble members are not relevant
-                  'Atmosphere '+day_freq_name: ['atm',day_freq_name,''],
-                  'Atmosphere '+month_freq_name: ['atm',month_freq_name,''],
-                  'Ice '+day_freq_name: ['ice',day_freq_name,''],
-                  'Ice '+month_freq_name: ['ice',month_freq_name,''],
-                  'Land '+day_freq_name: ['lnd',day_freq_name,''],
-                  'Land '+month_freq_name: ['lnd',month_freq_name,''],
-                  'Ocean '+month_freq_name: ['ocn',month_freq_name,''],
-                  'Ocean '+yearly_freq_name: ['ocn',yearly_freq_name,''],
-                  'River Runoff '+day_freq_name: ['rof',day_freq_name,''],
-                  'River Runoff '+month_freq_name: ['rof',month_freq_name,''],
+child_datasets = {ensemble_name+' Ice Daily': ['ice',day_freq_name,ensemble_name],
+                  ensemble_name+' Ice Monthly': ['ice',month_freq_name,ensemble_name],
+                  'Atmosphere 6-Hourly': ['atm',hour6_freq_name,''],  # ensemble member can be empty string if ensemble members are not relevant
+                  'Atmosphere Daily': ['atm',day_freq_name,''],
+                  'Atmosphere Monthly': ['atm',month_freq_name,''],
+                  'Ice Daily': ['ice',day_freq_name,''],
+                  'Ice Monthly': ['ice',month_freq_name,''],
+                  'Land Daily': ['lnd',day_freq_name,''],
+                  'Land Monthly': ['lnd',month_freq_name,''],
+                  'Ocean Monthly': ['ocn',month_freq_name,''],
+                  'Ocean Yearly': ['ocn',yearly_freq_name,''],
+                  'River Runoff Daily': ['rof',day_freq_name,''],
+                  'River Runoff Daily': ['rof',month_freq_name,''],
                  }
 
 ovewrite_child_dataset_with_ensembles = False  # Change to True if you want to use this feature!
@@ -119,9 +120,10 @@ for child in child_datasets:
         freq_number = '2'
     elif child_datasets[child][1]==yearly_freq_name:
         freq_number = '3'
-    elif child_datasets[child][1]==hour6_freq_name:
+    elif child_datasets[child][1]==hour3_freq_name:
         freq_number = '4'
-    # IF YOU ADDED MORE FREQUENCY OPTIONS, INCLUDE THEM HERE
+    elif child_datasets[child][1]==hour6_freq_name:
+        freq_number = '5'
     else:
          print(f"Warning: freq_number {child_datasets[child][1]} not found")
 
@@ -146,8 +148,10 @@ with open(scratch_dir+dset+".gp", "w") as file:
         freq=child_datasets[child][1]
         ens=child_datasets[child][2]
         number=child_datasets[child][3]
-        file.write(f"{number}<:>{ens} {comp}_{freq}<:>0<:>{name} {child} Files<:><:>P<:><:><:>\n")
-
+        if ens!='':
+            file.write(f"{number}<:>{ens} {comp}_{freq}<:>0<:>{name} {child} Files<:><:>P<:><:><:>\n")
+        else:
+            file.write(f"{number}<:>{comp}_{freq}<:>0<:>{name} {child} Files<:><:>P<:><:><:>\n")
 #--------------------------------------------------------------------------------------------------
 # produce files (eg d651008.111) to hold list of files
 # EXAMPLE:
@@ -171,7 +175,10 @@ with open(scratch_dir+"find_commands", "w") as file:
         freq=child_datasets[child][1]
         ens=child_datasets[child][2]
         number=child_datasets[child][3]
-        file.write(f"find {ens}/{comp}/proc/tseries/{freq}/ -type f | awk '"+"{print $1"+'"'+"<:>"+'"'+"}'"+f" >> {scratch_dir}{dset}"+'.'+f"{number}\n")
+        if ens!='':
+            file.write(f"find {ens}/{comp}/proc/tseries/{freq}/ -type f | awk '"+"{print $1"+'"'+"<:>"+'"'+"}'"+f" >> {scratch_dir}{dset}"+'.'+f"{number}\n")
+        else:
+            file.write(f"find {comp}/proc/tseries/{freq}/ -type f | awk '"+"{print $1"+'"'+"<:>"+'"'+"}'"+f" >> {scratch_dir}{dset}"+'.'+f"{number}\n")  # NOTE: you may need to adjust if your file structure does not match the structure above!
 
 #--------------------------------------------------------------------------------------------------
 # produce list of dsarch commands to run from scratch directory as well as a few one-time commands to run
