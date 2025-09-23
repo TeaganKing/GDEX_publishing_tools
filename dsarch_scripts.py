@@ -36,11 +36,13 @@ hour6_freq_name = 'hourly6'  # could change to '6-hourly'
 # THIS SHOULD BE A DICTIONARY OF ALL CHILD DATASETS. IT NEEDS UPDATING FOR EACH DATASET
 # The key (eg Atmoshperic daily) is concatenated with the name (eg CESM1-CAM5-DPLE) to provide the displayed name on RDA (eg CESM1-CAM5-DPLE Atmospheric daily).
 # The corresponding values are a list of [component, frequency, ensemble member].
-child_datasets = {ensemble_name+' Ice Daily': ['ice',day_freq_name,ensemble_name],
-                  ensemble_name+' Ice Monthly': ['ice',month_freq_name,ensemble_name],
+child_datasets = {
+                  #ensemble_name+' Ice Daily': ['ice',day_freq_name,ensemble_name],
+                  #ensemble_name+' Ice Monthly': ['ice',month_freq_name,ensemble_name],
                   'Atmosphere 6-Hourly': ['atm',hour6_freq_name,''],  # ensemble member can be empty string if ensemble members are not relevant
                   'Atmosphere Daily': ['atm',day_freq_name,''],
                   'Atmosphere Monthly': ['atm',month_freq_name,''],
+                  'Glacier Yearly': ['glc', yearly_freq_name,''],
                   'Ice Daily': ['ice',day_freq_name,''],
                   'Ice Monthly': ['ice',month_freq_name,''],
                   'Land Daily': ['lnd',day_freq_name,''],
@@ -69,7 +71,7 @@ run_in_batch = True  # if running on casper, appends -d -b to dsarch commands in
 # USERS PROBABLY DON'T NEED TO EDIT ANYTHING BELOW THIS LINE
 #############################################################################################################################
 #--------------------------------------------------------------------------------------------------
-scratch_dir = "/glade/campaign/collections/rda/scratch/"+username+"/"+dset+"/"
+scratch_dir = "/glade/campaign/collections/gdex/work/"+username+"/"+dset+"/"
 if not os.path.exists(scratch_dir):
     os.mkdir(scratch_dir)
 
